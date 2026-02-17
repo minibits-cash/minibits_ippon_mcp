@@ -34,7 +34,11 @@ cp .env.example .env
 3. Push the database schema:
 
 ```bash
-npx prisma db push
+# Create database and apply schema
+npx prisma migrate dev --name init
+
+# Generate Prisma client
+npx prisma generate
 ```
 
 ## Build & Run
@@ -43,11 +47,8 @@ npx prisma db push
 # Build
 yarn build
 
-# Run (stdio transport, for local MCP clients)
-yarn start:stdio
-
-# Run (HTTP transport, for remote MCP clients)
-yarn start:http
+# Run (in eihter stdio or HTTP transport, for remote MCP clients)
+yarn start:prod
 ```
 
 For development with auto-reload:

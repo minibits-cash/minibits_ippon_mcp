@@ -6,8 +6,7 @@
   "scripts": {
     "start:dev": "ts-node-dev --respawn --pretty --transpile-only --project tsconfig.json src/mcp.ts",
     "build": "tsc --project tsconfig.json --noEmit && esbuild src/mcp.ts --bundle --platform=node --target=es2022 --format=esm --outdir=dist --packages=external --sourcemap --banner:js=\"#!/usr/bin/env node\"",
-    "start:stdio": "MCP_TRANSPORT=stdio node dist/mcp.js",
-    "start:http": "MCP_TRANSPORT=http node dist/mcp.js",
+    "start:prod": "node dist/mcp.js",
     "prisma:updateTypes": "npx prisma generate",
     "prisma:updateDb": "npx prisma db push"
   },
