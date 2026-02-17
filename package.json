@@ -13,7 +13,9 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@prisma/client": "^6.13.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
+    "react-native-logs": "^5.5.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

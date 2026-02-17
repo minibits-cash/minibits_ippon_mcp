@@ -7,6 +7,7 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js'
 import { z } from 'zod'
 import prisma from './utils/prismaClient'
+import { log } from './services/logService'
 
 const IPPON_URL = process.env.IPPON_URL || 'http://localhost:3001'
 const MCP_PORT = parseInt(process.env.MCP_PORT || '3002')
@@ -24,7 +25,7 @@ interface SessionState {
 async function initSession(state: SessionState): Promise<string> {
     const session = await prisma.mcpSession.create({ data: {} })
     state.sessionId = session.id
-    console.error(`[mcp] Session created: ${state.sessionId}`)
+    log.info(`Session created: ${state.sessionId}`)
     return state.sessionId
 }
 
@@ -343,7 +344,7 @@ async function startStdio() {
     await initSession(state)
     const transport = new StdioServerTransport()
     await server.connect(transport)
-    console.error(`[mcp] Minibits Ippon MCP server running via stdio (session: ${state.sessionId})`)
+    log.info(`Minibits Ippon MCP server running via stdio (session: ${state.sessionId})`)
 }
 
 
@@ -368,7 +369,7 @@ async function startHttp() {
                 transport = new StreamableHTTPServerTransport({
                     sessionIdGenerator: () => randomUUID(),
                     onsessioninitialized: (sid: string) => {
-                        console.error(`[mcp] HTTP session initialized: ${sid}`)
+                        log.info(`HTTP session initialized: ${sid}`)
                         transports[sid] = transport
                     },
                 })
@@ -376,7 +377,7 @@ async function startHttp() {
                 transport.onclose = () => {
                     const sid = transport.sessionId
                     if (sid && transports[sid]) {
-                        console.error(`[mcp] HTTP session closed: ${sid}`)
+                        log.info(`HTTP session closed: ${sid}`)
                         delete transports[sid]
                     }
                 }
@@ -397,7 +398,7 @@ async function startHttp() {
 
             await transport.handleRequest(req, res, req.body)
         } catch (error) {
-            console.error('[mcp] Error handling request:', error)
+            log.error('Error handling request:', error)
             if (!res.headersSent) {
                 res.status(500).json({
                     jsonrpc: '2.0',
@@ -429,11 +430,11 @@ async function startHttp() {
     })
 
     app.listen(MCP_PORT, () => {
-        console.error(`[mcp] Minibits Ippon MCP server running via HTTP on port ${MCP_PORT}`)
+        log.info(`Minibits Ippon MCP server running via HTTP on port ${MCP_PORT}`)
     })
 
     process.on('SIGINT', async () => {
-        console.error('[mcp] Shutting down...')
+        log.info('Shutting down...')
         for (const sid in transports) {
             await transports[sid].close().catch(() => {})
             delete transports[sid]
@@ -448,6 +449,6 @@ async function startHttp() {
 const main = TRANSPORT === 'http' ? startHttp : startStdio
 
 main().catch((err) => {
-    console.error('[mcp] Fatal error:', err)
+    log.error('Fatal error:', err)
     process.exit(1)
 })
