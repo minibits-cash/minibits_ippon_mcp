@@ -351,7 +351,7 @@ async function startStdio() {
 // --- Transport: Streamable HTTP (remote, multi-session) ---
 
 async function startHttp() {
-    const app = createMcpExpressApp({ host: '0.0.0.0' })
+    const app = createMcpExpressApp({ host: '127.0.0.1' })
 
     // Map of session ID -> transport
     const transports: Record<string, StreamableHTTPServerTransport> = {}
