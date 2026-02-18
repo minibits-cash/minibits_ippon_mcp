@@ -12,6 +12,7 @@ import { log } from './services/logService'
 const IPPON_URL = process.env.IPPON_URL || 'http://localhost:3001'
 const MCP_PORT = parseInt(process.env.MCP_PORT || '3002')
 const TRANSPORT = process.env.MCP_TRANSPORT || 'stdio'
+const MCP_HOST = process.env.MCP_HOST || 'localhost'
 
 
 // --- Session-scoped state ---
@@ -351,7 +352,7 @@ async function startStdio() {
 // --- Transport: Streamable HTTP (remote, multi-session) ---
 
 async function startHttp() {
-    const app = createMcpExpressApp({ host: '127.0.0.1' })
+    const app = createMcpExpressApp({ host: '127.0.0.1', allowedHosts: [MCP_HOST] })
 
     // Map of session ID -> transport
     const transports: Record<string, StreamableHTTPServerTransport> = {}
