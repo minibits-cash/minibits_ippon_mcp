@@ -28,8 +28,10 @@ cp .env.example .env
 |---|---|---|
 | `DATABASE_URL` | PostgreSQL connection string | — |
 | `IPPON_URL` | Ippon wallet API base URL | `http://localhost:3001` |
+| `LOG_LEVEL` | Log verbosity (`trace`, `debug`, `info`, `warn`, `error`) | `error` |
 | `MCP_TRANSPORT` | Transport mode: `stdio` or `http` | `stdio` |
 | `MCP_PORT` | HTTP server port (when using `http` transport) | `3002` |
+| `MCP_HOST` | Allowed `Host` header for DNS rebinding protection. When exposed via a reverse proxy under a public domain, set to that domain (e.g. `ippon.minibits.cash`) | `localhost` |
 
 3. Push the database schema:
 
